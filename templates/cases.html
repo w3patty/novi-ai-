@@ -1,0 +1,648 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Мои дела — LegalAI{% endblock %}
+
+{% block content %}
+
+<div class="workspace">
+
+    <!-- ==========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            WORKSPACE
+        </div>
+
+
+        <a
+            href="{{ url_for('main.dashboard') }}"
+            class="sidebar-link"
+        >
+            <span>⌂</span>
+            <span>Главная</span>
+        </a>
+
+
+        <a
+            href="{{ url_for('cases.case_list') }}"
+            class="sidebar-link active"
+        >
+            <span>▣</span>
+            <span>Мои дела</span>
+        </a>
+
+
+        <a
+            href="#"
+            class="sidebar-link disabled"
+        >
+            <span>▤</span>
+            <span>Документы</span>
+            <small>Скоро</small>
+        </a>
+
+
+        <a
+            href="#"
+            class="sidebar-link disabled"
+        >
+            <span>✦</span>
+            <span>AI Assistant</span>
+            <small>Скоро</small>
+        </a>
+
+
+        <div class="sidebar-title tools-title">
+            ИНСТРУМЕНТЫ
+        </div>
+
+
+        <a
+            href="#"
+            class="sidebar-link disabled"
+        >
+            <span>▱</span>
+            <span>Шаблоны</span>
+            <small>Скоро</small>
+        </a>
+
+
+        <a
+            href="#"
+            class="sidebar-link disabled"
+        >
+            <span>⚙</span>
+            <span>Настройки</span>
+            <small>Скоро</small>
+        </a>
+
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="logout"
+            >
+                Выйти
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ==========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <section class="workspace-content">
+
+
+        <!-- HEADER -->
+
+        <div class="workspace-header">
+
+            <div>
+
+                <div class="workspace-label">
+                    LEGALAI WORKSPACE
+                </div>
+
+                <h1>
+                    Мои дела
+                </h1>
+
+                <p>
+                    Управляйте юридическими делами и клиентами.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="button primary"
+                id="openCaseButton"
+            >
+                + Новое дело
+            </button>
+
+        </div>
+
+
+        <!-- ==========================================
+             FLASH MESSAGES
+        ========================================== -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="alert {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- ==========================================
+             CASES LIST
+        ========================================== -->
+
+        {% if cases %}
+
+            <div class="cases-list">
+
+                {% for case in cases %}
+
+                    <div class="case-card">
+
+
+                        <!-- CASE MAIN -->
+
+                        <div class="case-main">
+
+                            <div class="case-icon">
+                                ▣
+                            </div>
+
+
+                            <div>
+
+                                <h3>
+                                    {{ case.title }}
+                                </h3>
+
+                                <p>
+                                    Клиент:
+                                    {{ case.client_name }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CASE META -->
+
+                        <div class="case-meta">
+
+                            <span class="case-status">
+                                {{ case.status }}
+                            </span>
+
+
+                            <span class="case-date">
+
+                                {{ case.created_at.strftime(
+                                    '%d.%m.%Y'
+                                ) }}
+
+                            </span>
+
+
+                            <a
+                                href="{{ url_for(
+                                    'cases.case_detail',
+                                    case_id=case.id
+                                ) }}"
+                                class="case-open"
+                            >
+                                Открыть →
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- ==========================================
+                 EMPTY STATE
+            ========================================== -->
+
+            <div class="empty-workspace cases-empty">
+
+                <div class="empty-icon">
+                    ▣
+                </div>
+
+
+                <h2>
+                    У вас пока нет дел
+                </h2>
+
+
+                <p>
+                    Создайте первое юридическое дело,
+                    чтобы начать работу.
+                </p>
+
+
+                <button
+                    type="button"
+                    class="button primary"
+                    id="openEmptyCaseButton"
+                >
+                    + Создать дело
+                </button>
+
+            </div>
+
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+
+<!-- ==========================================
+     CREATE CASE MODAL
+========================================== -->
+
+<div
+    id="caseModal"
+    class="modal"
+>
+
+    <div class="modal-card">
+
+
+        <!-- CLOSE -->
+
+        <button
+            type="button"
+            class="modal-close"
+            id="closeCaseButton"
+            aria-label="Закрыть"
+        >
+            ×
+        </button>
+
+
+        <!-- ICON -->
+
+        <div class="modal-icon">
+            ▣
+        </div>
+
+
+        <!-- TITLE -->
+
+        <h2>
+            Новое дело
+        </h2>
+
+
+        <p>
+            Добавьте информацию о юридическом деле.
+        </p>
+
+
+        <!-- FORM -->
+
+        <form
+            method="POST"
+            action="{{ url_for('cases.case_list') }}"
+            id="caseCreateForm"
+        >
+
+
+            <!-- TITLE -->
+
+            <div class="form-group">
+
+                <label for="caseTitle">
+                    Название дела
+                </label>
+
+
+                <input
+                    type="text"
+                    id="caseTitle"
+                    name="title"
+                    placeholder="Например: Договор поставки"
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+
+            <!-- CLIENT -->
+
+            <div class="form-group">
+
+                <label for="caseClient">
+                    Клиент
+                </label>
+
+
+                <input
+                    type="text"
+                    id="caseClient"
+                    name="client_name"
+                    placeholder="Имя или компания"
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group">
+
+                <label for="caseDescription">
+                    Описание
+                </label>
+
+
+                <textarea
+                    id="caseDescription"
+                    name="description"
+                    placeholder="Краткое описание дела..."
+                ></textarea>
+
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                type="submit"
+                class="button primary full"
+            >
+                Создать дело
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     MODAL JAVASCRIPT
+========================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const modal =
+            document.getElementById("caseModal");
+
+
+        const openButton =
+            document.getElementById(
+                "openCaseButton"
+            );
+
+
+        const emptyOpenButton =
+            document.getElementById(
+                "openEmptyCaseButton"
+            );
+
+
+        const closeButton =
+            document.getElementById(
+                "closeCaseButton"
+            );
+
+
+        const form =
+            document.getElementById(
+                "caseCreateForm"
+            );
+
+
+        const titleInput =
+            document.getElementById(
+                "caseTitle"
+            );
+
+
+        /*
+         * OPEN MODAL
+         */
+
+        function openModal() {
+
+            if (!modal) {
+
+                console.error(
+                    "LegalAI: caseModal не найден."
+                );
+
+                return;
+            }
+
+
+            modal.classList.add("show");
+
+
+            /*
+             * Автоматически ставим курсор
+             * в поле названия дела.
+             */
+
+            setTimeout(
+                function () {
+
+                    if (titleInput) {
+                        titleInput.focus();
+                    }
+
+                },
+                100
+            );
+
+        }
+
+
+        /*
+         * CLOSE MODAL
+         */
+
+        function closeModal() {
+
+            if (!modal) {
+                return;
+            }
+
+            modal.classList.remove("show");
+
+        }
+
+
+        /*
+         * MAIN BUTTON
+         */
+
+        if (openButton) {
+
+            openButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+                    openModal();
+
+                }
+            );
+
+        }
+
+
+        /*
+         * EMPTY STATE BUTTON
+         */
+
+        if (emptyOpenButton) {
+
+            emptyOpenButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+                    openModal();
+
+                }
+            );
+
+        }
+
+
+        /*
+         * CLOSE BUTTON
+         */
+
+        if (closeButton) {
+
+            closeButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+                    closeModal();
+
+                }
+            );
+
+        }
+
+
+        /*
+         * CLICK OUTSIDE MODAL
+         */
+
+        if (modal) {
+
+            modal.addEventListener(
+                "click",
+                function (event) {
+
+                    if (
+                        event.target === modal
+                    ) {
+
+                        closeModal();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /*
+         * ESCAPE
+         */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Escape" &&
+                    modal &&
+                    modal.classList.contains("show")
+                ) {
+
+                    closeModal();
+
+                }
+
+            }
+        );
+
+
+        /*
+         * FORM SUBMIT
+         *
+         * Здесь ничего дополнительно
+         * делать не нужно.
+         * Flask получит POST /case.
+         */
+
+        if (form) {
+
+            form.addEventListener(
+                "submit",
+                function () {
+
+                    const title =
+                        document.getElementById(
+                            "caseTitle"
+                        ).value.trim();
+
+
+                    const client =
+                        document.getElementById(
+                            "caseClient"
+                        ).value.trim();
+
+
+                    if (!title || !client) {
+
+                        return;
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}

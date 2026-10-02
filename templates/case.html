@@ -1,0 +1,470 @@
+{% extends "base.html" %}
+
+{% block title %}{{ case.title }} — LegalAI{% endblock %}
+
+{% block content %}
+
+<div class="workspace">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            WORKSPACE
+        </div>
+
+        <a href="{{ url_for('main.dashboard') }}" class="sidebar-link">
+            <span>⌂</span>
+            <span>Главная</span>
+        </a>
+
+        <a href="{{ url_for('cases.case_list') }}" class="sidebar-link active">
+            <span>▣</span>
+            <span>Мои дела</span>
+        </a>
+
+        <a href="#" class="sidebar-link disabled">
+            <span>▤</span>
+            <span>Документы</span>
+            <small>Скоро</small>
+        </a>
+
+        <a href="#" class="sidebar-link disabled">
+            <span>✦</span>
+            <span>AI Assistant</span>
+            <small>Скоро</small>
+        </a>
+
+        <div class="sidebar-title tools-title">
+            ИНСТРУМЕНТЫ
+        </div>
+
+        <a href="#" class="sidebar-link disabled">
+            <span>▱</span>
+            <span>Шаблоны</span>
+            <small>Скоро</small>
+        </a>
+
+        <a href="#" class="sidebar-link disabled">
+            <span>⚙</span>
+            <span>Настройки</span>
+            <small>Скоро</small>
+        </a>
+
+        <div class="sidebar-bottom">
+
+            <a href="{{ url_for('auth.logout') }}" class="logout">
+                Выйти
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <section class="workspace-content">
+
+        <a
+            href="{{ url_for('cases.case_list') }}"
+            class="back-link"
+        >
+            ← Вернуться к делам
+        </a>
+
+
+        <!-- HEADER -->
+
+        <div class="case-header">
+
+            <div class="case-title-area">
+
+                <div class="case-big-icon">
+                    ▣
+                </div>
+
+                <div>
+
+                    <div class="workspace-label">
+                        LEGALAI CASE
+                    </div>
+
+                    <h1>
+                        {{ case.title }}
+                    </h1>
+
+                    <p>
+                        Клиент: {{ case.client_name }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="case-header-actions">
+
+                <span class="case-status">
+                    {{ case.status }}
+                </span>
+
+                <button
+                    type="button"
+                    class="button primary"
+                    disabled
+                >
+                    ✦ AI Assistant
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- FLASH -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="alert {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- INFO -->
+
+        <div class="case-info-grid">
+
+            <div class="case-info-card">
+
+                <span class="info-label">
+                    КЛИЕНТ
+                </span>
+
+                <strong>
+                    {{ case.client_name }}
+                </strong>
+
+            </div>
+
+
+            <div class="case-info-card">
+
+                <span class="info-label">
+                    СТАТУС
+                </span>
+
+                <strong>
+                    {{ case.status }}
+                </strong>
+
+            </div>
+
+
+            <div class="case-info-card">
+
+                <span class="info-label">
+                    СОЗДАНО
+                </span>
+
+                <strong>
+                    {{ case.created_at.strftime('%d.%m.%Y') }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- DESCRIPTION + AI -->
+
+        <div class="case-content-grid">
+
+            <div class="case-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Описание дела
+                        </h2>
+
+                        <p>
+                            Основная информация
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="case-description">
+
+                    {% if case.description %}
+
+                        {{ case.description }}
+
+                    {% else %}
+
+                        <span class="muted">
+                            Описание пока не добавлено.
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="case-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            AI Assistant
+                        </h2>
+
+                        <p>
+                            Помощник по этому делу
+                        </p>
+
+                    </div>
+
+                    <div class="ai-status">
+
+                        <span></span>
+                        AI
+
+                    </div>
+
+                </div>
+
+
+                <div class="ai-placeholder">
+
+                    <div class="ai-placeholder-icon">
+                        ✦
+                    </div>
+
+                    <h3>
+                        AI-помощник готов
+                    </h3>
+
+                    <p>
+                        Загрузите юридический документ,
+                        чтобы подготовить его к AI-анализу.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DOCUMENTS -->
+
+        <div class="case-panel documents-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Документы
+                    </h2>
+
+                    <p>
+                        Материалы юридического дела
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="button primary"
+                    onclick="openDocumentPicker()"
+                >
+                    + Загрузить документ
+                </button>
+
+            </div>
+
+
+            <div class="document-counter">
+
+                Документов в этом деле:
+
+                <strong>
+                    {{ case.documents|length }}
+                </strong>
+
+            </div>
+
+
+            <!-- UPLOAD FORM -->
+
+            <form
+                id="uploadForm"
+                method="POST"
+                action="{{ url_for(
+                    'cases.upload_document',
+                    case_id=case.id
+                ) }}"
+                enctype="multipart/form-data"
+            >
+
+                <input
+                    type="file"
+                    id="documentInput"
+                    name="document"
+                    accept=".pdf,.docx,.txt"
+                    hidden
+                >
+
+            </form>
+
+
+            <!-- DOCUMENT LIST -->
+
+            {% if case.documents|length > 0 %}
+
+                <div class="documents-list">
+
+                    {% for document in case.documents %}
+
+                        <a
+                            href="{{ url_for(
+                                'cases.document_detail',
+                                document_id=document.id
+                            ) }}"
+                            class="document-item"
+                        >
+
+                            <div class="document-icon">
+                                ▤
+                            </div>
+
+
+                            <div class="document-info">
+
+                                <strong>
+                                    {{ document.filename }}
+                                </strong>
+
+                                <span>
+
+                                    {{ document.file_type|upper }}
+
+                                    ·
+
+                                    {{ document.created_at.strftime(
+                                        '%d.%m.%Y %H:%M'
+                                    ) }}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="document-status">
+                                Открыть →
+                            </div>
+
+                        </a>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="documents-empty">
+
+                    <div class="documents-icon">
+                        ▤
+                    </div>
+
+                    <h3>
+                        Документов пока нет
+                    </h3>
+
+                    <p>
+                        Загрузите PDF, DOCX или TXT,
+                        чтобы начать работу с документом.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+function openDocumentPicker() {
+
+    const input = document.getElementById(
+        "documentInput"
+    );
+
+    if (input) {
+        input.click();
+    }
+}
+
+
+const documentInput =
+    document.getElementById(
+        "documentInput"
+    );
+
+const uploadForm =
+    document.getElementById(
+        "uploadForm"
+    );
+
+
+if (
+    documentInput &&
+    uploadForm
+) {
+
+    documentInput.addEventListener(
+        "change",
+        function () {
+
+            if (
+                documentInput.files &&
+                documentInput.files.length > 0
+            ) {
+
+                uploadForm.submit();
+
+            }
+
+        }
+    );
+
+}
+
+</script>
+
+{% endblock %}

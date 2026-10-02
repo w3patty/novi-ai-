@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}LegalAI — AI для юристов{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-badge">
+        <span></span>
+        AI-платформа для юристов
+    </div>
+
+    <h1>
+        Юридическая работа.
+        <br>
+        <span>Быстрее с AI.</span>
+    </h1>
+
+    <p class="hero-text">
+        LegalAI помогает анализировать юридические документы,
+        организовывать дела и быстрее находить важную информацию.
+    </p>
+
+    <div class="hero-buttons">
+
+        <a href="/register" class="button primary">
+            Начать работу
+            <span>→</span>
+        </a>
+
+        <a href="/login" class="button secondary">
+            Войти
+        </a>
+
+    </div>
+
+    <div class="features">
+
+        <div class="feature-card">
+            <div class="feature-icon">✦</div>
+            <h3>AI-анализ</h3>
+            <p>
+                Анализ документов и поиск важной информации.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">▣</div>
+            <h3>Юридические дела</h3>
+            <p>
+                Все дела и материалы в одном рабочем пространстве.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">⌕</div>
+            <h3>Быстрый поиск</h3>
+            <p>
+                Находите нужные сведения значительно быстрее.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

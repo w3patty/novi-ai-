@@ -1,0 +1,376 @@
+{% extends "base.html" %}
+
+{% block title %}{{ document.filename }} — LegalAI{% endblock %}
+
+{% block content %}
+
+<div class="workspace">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            WORKSPACE
+        </div>
+
+        <a
+            href="{{ url_for('main.dashboard') }}"
+            class="sidebar-link"
+        >
+            <span>⌂</span>
+            <span>Главная</span>
+        </a>
+
+        <a
+            href="{{ url_for('cases.case_list') }}"
+            class="sidebar-link active"
+        >
+            <span>▣</span>
+            <span>Мои дела</span>
+        </a>
+
+        <a
+            href="#"
+            class="sidebar-link disabled"
+        >
+            <span>▤</span>
+            <span>Документы</span>
+            <small>Скоро</small>
+        </a>
+
+        <a
+            href="#"
+            class="sidebar-link disabled"
+        >
+            <span>✦</span>
+            <span>AI Assistant</span>
+            <small>Скоро</small>
+        </a>
+
+        <div class="sidebar-title tools-title">
+            ИНСТРУМЕНТЫ
+        </div>
+
+        <a
+            href="#"
+            class="sidebar-link disabled"
+        >
+            <span>▱</span>
+            <span>Шаблоны</span>
+            <small>Скоро</small>
+        </a>
+
+        <a
+            href="#"
+            class="sidebar-link disabled"
+        >
+            <span>⚙</span>
+            <span>Настройки</span>
+            <small>Скоро</small>
+        </a>
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="logout"
+            >
+                Выйти
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <section class="workspace-content">
+
+        <a
+            href="{{ url_for('cases.case_detail', case_id=case.id) }}"
+            class="back-link"
+        >
+            ← Вернуться к делу
+        </a>
+
+
+        <div class="document-page-header">
+
+            <div class="document-page-title">
+
+                <div class="case-big-icon">
+                    ▤
+                </div>
+
+                <div>
+
+                    <div class="workspace-label">
+                        LEGALAI DOCUMENT
+                    </div>
+
+                    <h1>
+                        {{ document.filename }}
+                    </h1>
+
+                    <p>
+                        Дело: {{ case.title }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="document-type">
+                {{ document.file_type|upper }}
+            </div>
+
+        </div>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="alert {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <div class="document-stats">
+
+            <div class="case-info-card">
+
+                <span class="info-label">
+                    ФАЙЛ
+                </span>
+
+                <strong>
+                    {{ document.filename }}
+                </strong>
+
+            </div>
+
+
+            <div class="case-info-card">
+
+                <span class="info-label">
+                    ТИП
+                </span>
+
+                <strong>
+                    {{ document.file_type|upper }}
+                </strong>
+
+            </div>
+
+
+            <div class="case-info-card">
+
+                <span class="info-label">
+                    ЗАГРУЖЕН
+                </span>
+
+                <strong>
+                    {{ document.created_at.strftime('%d.%m.%Y') }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="case-panel document-text-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Извлечённый текст
+                    </h2>
+
+                    <p>
+                        Текст, который LegalAI получил из документа
+                    </p>
+
+                </div>
+
+                <div class="ai-status">
+
+                    <span></span>
+
+                    TEXT READY
+
+                </div>
+
+            </div>
+
+
+            <div class="extracted-text">
+
+                {% if document.extracted_text %}
+
+                    {{ document.extracted_text }}
+
+                {% else %}
+
+                    <div class="documents-empty">
+
+                        <div class="documents-icon">
+                            ⚠
+                        </div>
+
+                        <h3>
+                            Текст не найден
+                        </h3>
+
+                        <p>
+                            Не удалось извлечь текст из этого документа.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="case-panel ai-document-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        AI-анализ
+                    </h2>
+
+                    <p>
+                        Анализ документа с помощью LegalAI
+                    </p>
+
+                </div>
+
+                {% if document.ai_analysis %}
+
+                    <div class="ai-status">
+
+                        <span></span>
+
+                        ANALYZED
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if document.ai_analysis %}
+
+                <div class="ai-analysis-result">
+
+                    <div class="ai-result-icon">
+                        ✦
+                    </div>
+
+                    <div class="ai-result-content">
+
+                        <h3>
+                            Результат анализа
+                        </h3>
+
+                        <div class="ai-result-text">
+                            {{ document.ai_analysis }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <form
+                    method="POST"
+                    action="{{ url_for(
+                        'cases.analyze_document_route',
+                        document_id=document.id
+                    ) }}"
+                >
+
+                    <button
+                        type="submit"
+                        class="button secondary"
+                    >
+                        ↻ Повторить анализ
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <div class="ai-placeholder">
+
+                    <div class="ai-placeholder-icon">
+                        ✦
+                    </div>
+
+                    <h3>
+                        Документ готов к анализу
+                    </h3>
+
+                    <p>
+                        LegalAI может обработать извлечённый
+                        текст и подготовить структурированный
+                        анализ документа.
+                    </p>
+
+                    {% if document.extracted_text %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'cases.analyze_document_route',
+                                document_id=document.id
+                            ) }}"
+                        >
+
+                            <button
+                                type="submit"
+                                class="button primary"
+                            >
+                                ✦ Запустить AI-анализ
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <button
+                            type="button"
+                            class="button primary"
+                            disabled
+                        >
+                            ✦ Нет текста для анализа
+                        </button>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

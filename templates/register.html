@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация — LegalAI{% endblock %}
+
+{% block content %}
+
+<div class="auth-wrapper">
+
+    <div class="auth-card">
+
+        <div class="auth-icon">L</div>
+
+        <h1>Создать аккаунт</h1>
+
+        <p class="auth-description">
+            Начните работать с LegalAI
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="alert {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label>Имя пользователя</label>
+
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Ваше имя"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Пароль</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Создайте пароль"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Повторите пароль</label>
+
+                <input
+                    type="password"
+                    name="password_confirm"
+                    placeholder="Повторите пароль"
+                    required
+                >
+
+            </div>
+
+            <button type="submit" class="button primary full">
+                Создать аккаунт
+            </button>
+
+        </form>
+
+        <p class="auth-bottom">
+            Уже есть аккаунт?
+            <a href="/login">Войти</a>
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}
