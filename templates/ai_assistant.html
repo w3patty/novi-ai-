@@ -1,0 +1,447 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}AI Assistant — LegalAI{% endblock %}
+
+{% block content %}
+
+<div class="workspace">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            WORKSPACE
+        </div>
+
+        <a href="{{ url_for('main.dashboard') }}" class="sidebar-link">
+            <span>⌂</span>
+            <span>Главная</span>
+        </a>
+
+        <a href="{{ url_for('cases.case_list') }}" class="sidebar-link">
+            <span>▣</span>
+            <span>Мои дела</span>
+        </a>
+
+        <a href="{{ url_for('cases.documents') }}" class="sidebar-link">
+            <span>▤</span>
+            <span>Документы</span>
+        </a>
+
+        <a href="{{ url_for('main.ai_assistant') }}" class="sidebar-link active">
+            <span>✦</span>
+            <span>AI Assistant</span>
+        </a>
+
+        <div class="sidebar-title tools-title">
+            ИНСТРУМЕНТЫ
+        </div>
+
+        <a href="{{ url_for('main.templates_page') }}" class="sidebar-link">
+            <span>▱</span>
+            <span>Шаблоны</span>
+        </a>
+
+        <a href="{{ url_for('main.settings') }}" class="sidebar-link">
+            <span>⚙</span>
+            <span>Настройки</span>
+        </a>
+
+        <div class="sidebar-bottom">
+
+            <div class="user-card">
+
+                <div class="user-avatar">
+                    {{ user.username[0]|upper }}
+                </div>
+
+                <div class="user-info">
+                    <strong>{{ user.username }}</strong>
+                    <span>{{ user.email }}</span>
+                </div>
+
+            </div>
+
+            <a href="{{ url_for('auth.logout') }}" class="logout">
+                Выйти
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <section class="workspace-content ai-page">
+
+        <!-- HEADER -->
+
+        <div class="ai-header">
+
+            <div>
+
+                <div class="ai-label">
+                    LEGALAI ASSISTANT
+                </div>
+
+                <h1>
+                    AI Assistant
+                </h1>
+
+                <p>
+                    Задавайте вопросы и анализируйте юридические
+                    документы с помощью AI.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- AI CAPABILITIES -->
+
+        <section class="ai-capabilities">
+
+            <div class="ai-section-heading">
+
+                <div>
+
+                    <h2>
+                        Юридический помощник
+                    </h2>
+
+                    <p>
+                        Введите вопрос или загрузите документ для анализа.
+                    </p>
+
+                </div>
+
+                <div class="ai-status">
+                    <span></span>
+                    AI готов
+                </div>
+
+            </div>
+
+
+            <div class="ai-tools-grid">
+
+                <div class="ai-tool-card">
+
+                    <div class="ai-tool-icon question-icon">
+                        ✦
+                    </div>
+
+                    <div class="ai-tool-content">
+
+                        <h3>
+                            Задать вопрос
+                        </h3>
+
+                        <p>
+                            Опишите вашу юридическую ситуацию
+                            или задайте вопрос.
+                        </p>
+
+                    </div>
+
+                    <div class="ai-tool-arrow">
+                        →
+                    </div>
+
+                </div>
+
+
+                <div class="ai-tool-card">
+
+                    <div class="ai-tool-icon document-tool-icon">
+                        ▤
+                    </div>
+
+                    <div class="ai-tool-content">
+
+                        <h3>
+                            Загрузить документ
+                        </h3>
+
+                        <p>
+                            PDF, DOCX или TXT. AI сможет
+                            проанализировать его содержимое.
+                        </p>
+
+                    </div>
+
+                    <div class="ai-tool-arrow">
+                        →
+                    </div>
+
+                </div>
+
+
+                <div class="ai-tool-card">
+
+                    <div class="ai-tool-icon risk-icon">
+                        !
+                    </div>
+
+                    <div class="ai-tool-content">
+
+                        <h3>
+                            Найти риски
+                        </h3>
+
+                        <p>
+                            Получите структурированный анализ
+                            потенциальных юридических рисков.
+                        </p>
+
+                    </div>
+
+                    <div class="ai-tool-arrow">
+                        →
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- NEW REQUEST -->
+
+        <section class="ai-request-card">
+
+            <div class="ai-request-header">
+
+                <div>
+
+                    <div class="ai-request-label">
+                        NEW REQUEST
+                    </div>
+
+                    <h2>
+                        Новый запрос
+                    </h2>
+
+                    <p>
+                        Получите AI-анализ юридической ситуации
+                        или загруженного документа.
+                    </p>
+
+                </div>
+
+                <div class="ai-request-icon">
+                    ✦
+                </div>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{{ url_for('main.ai_assistant') }}"
+                enctype="multipart/form-data"
+                class="ai-request-form"
+            >
+
+                <div class="ai-field">
+
+                    <label for="ai-question">
+                        Ваш вопрос
+                    </label>
+
+                    <textarea
+                        id="ai-question"
+                        name="question"
+                        placeholder="Например: какие риски есть в этом договоре?"
+                        rows="5"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="ai-upload">
+
+                    <div class="ai-upload-icon">
+                        ▤
+                    </div>
+
+                    <div class="ai-upload-content">
+
+                        <strong>
+                            Юридический документ
+                        </strong>
+
+                        <span>
+                            Поддерживаются PDF, DOCX и TXT.
+                        </span>
+
+                    </div>
+
+                    <label
+                        for="ai-document"
+                        class="ai-upload-button"
+                    >
+                        Выбрать файл
+                    </label>
+
+                    <input
+                        type="file"
+                        id="ai-document"
+                        name="document"
+                        accept=".pdf,.docx,.txt"
+                        hidden
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="ai-submit-button"
+                >
+                    <span>✦</span>
+                    Запустить анализ
+                    <span>→</span>
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- RESULT -->
+
+        {% if result and result.answer %}
+
+        <section class="ai-result-card">
+
+            <div class="ai-result-header">
+
+                <div>
+
+                    <div class="ai-result-label">
+                        AI ANALYSIS
+                    </div>
+
+                    <h2>
+                        Результат анализа
+                    </h2>
+
+                </div>
+
+                <div class="ai-result-icon">
+                    ✦
+                </div>
+
+            </div>
+
+
+            {% if request.form.get('question', '') %}
+
+            <div class="ai-result-question">
+
+                <span>
+                    ВАШ ВОПРОС
+                </span>
+
+                <p>
+                    {{ request.form.get('question', '') }}
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+           <div class="ai-chat-message">
+
+    <div class="ai-chat-avatar">
+        ✦
+    </div>
+
+    <div class="ai-chat-content">
+
+        <div class="ai-chat-name">
+            LegalAI
+            <span>AI Assistant</span>
+        </div>
+
+        <div class="ai-chat-bubble">
+
+            <div class="ai-markdown-answer">
+                {{ result.answer }}
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+            {% if result.risks %}
+
+            <div class="ai-risks">
+
+                <div class="ai-risks-title">
+
+                    <span>
+                        !
+                    </span>
+
+                    Выявленные риски
+
+                </div>
+
+
+                {% for risk in result.risks %}
+
+                <div class="ai-risk-item">
+                    {{ risk }}
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        {% else %}
+
+        <!-- EMPTY STATE -->
+
+        <section class="ai-empty-state">
+
+            <div class="ai-empty-glow"></div>
+
+            <div class="ai-empty-icon">
+                ✦
+            </div>
+
+            <div class="ai-empty-content">
+
+                <h2>
+                    LegalAI готов к работе
+                </h2>
+
+                <p>
+                    Используйте AI Assistant для анализа документов
+                    и получения юридической информации.
+                </p>
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}
+```

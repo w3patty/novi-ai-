@@ -1,5 +1,6 @@
 ﻿import os
 import uuid
+import json
 
 from flask import (
     Blueprint,
@@ -144,6 +145,118 @@ def case_detail(case_id):
         "case.html",
         case=case
     )
+@cases.route(
+    "/case/<int:case_id>/delete",
+    methods=["POST"]
+)
+@login_required
+def delete_case(case_id):
+
+    case = (
+        Case.query
+        .filter_by(
+            id=case_id,
+            user_id=current_user.id
+        )
+        .first_or_404()
+    )
+
+    documents = Document.query.filter_by(
+        case_id=case.id
+    ).all()
+
+    for document in documents:
+
+        if document.filepath and os.path.exists(
+            document.filepath
+        ):
+
+            try:
+
+                os.remove(
+                    document.filepath
+                )
+
+            except Exception as error:
+
+                print(
+                    "Ошибка удаления файла:",
+                    error
+                )
+
+        db.session.delete(
+            document
+        )
+
+    db.session.delete(
+        case
+    )
+
+    db.session.commit()
+
+    flash(
+        "Дело и связанные документы удалены.",
+        "success"
+    )
+
+    return redirect(
+        url_for(
+            "cases.case_list"
+        )
+    )
+
+@cases.route(
+    "/documents",
+    methods=["GET"]
+)
+@login_required
+def documents():
+
+    user_cases = (
+        Case.query
+        .filter_by(
+            user_id=current_user.id
+        )
+        .all()
+    )
+
+    documents = (
+        Document.query
+        .join(
+            Case,
+            Document.case_id == Case.id
+        )
+        .filter(
+            Case.user_id == current_user.id
+        )
+        .order_by(
+            Document.created_at.desc()
+        )
+        .all()
+    )
+
+    print("========== DOCUMENTS DEBUG ==========")
+    print("CURRENT USER ID:", current_user.id)
+    print("DOCUMENTS COUNT:", len(documents))
+
+    for document in documents:
+
+        print(
+            "DOCUMENT:",
+            document.id,
+            document.filename,
+            "CASE:",
+            document.case_id
+        )
+
+    print("======================================")
+
+    return render_template(
+        "documents.html",
+        documents=documents,
+        cases=user_cases,
+        user=current_user
+    )
 
 
 @cases.route(
@@ -180,7 +293,28 @@ def upload_document(case_id):
             )
         )
 
-    if not allowed_file(file.filename):
+    original_filename = file.filename.strip()
+
+    if "." not in original_filename:
+
+        flash(
+            "У файла отсутствует расширение.",
+            "error"
+        )
+
+        return redirect(
+            url_for(
+                "cases.case_detail",
+                case_id=case.id
+            )
+        )
+
+    extension = original_filename.rsplit(
+        ".",
+        1
+    )[1].lower()
+
+    if extension not in ALLOWED_EXTENSIONS:
 
         flash(
             "Поддерживаются только PDF, DOCX и TXT.",
@@ -193,15 +327,6 @@ def upload_document(case_id):
                 case_id=case.id
             )
         )
-
-    original_filename = secure_filename(
-        file.filename
-    )
-
-    extension = original_filename.rsplit(
-        ".",
-        1
-    )[1].lower()
 
     unique_filename = (
         str(uuid.uuid4())
@@ -226,7 +351,9 @@ def upload_document(case_id):
         unique_filename
     )
 
-    file.save(filepath)
+    file.save(
+        filepath
+    )
 
     try:
 
@@ -252,8 +379,18 @@ def upload_document(case_id):
         case_id=case.id
     )
 
-    db.session.add(document)
+    db.session.add(
+        document
+    )
+
     db.session.commit()
+
+    print("========== DOCUMENT UPLOAD ==========")
+    print("DOCUMENT ID:", document.id)
+    print("FILENAME:", document.filename)
+    print("CASE ID:", document.case_id)
+    print("USER ID:", current_user.id)
+    print("======================================")
 
     flash(
         "Документ успешно загружен.",
@@ -262,12 +399,179 @@ def upload_document(case_id):
 
     return redirect(
         url_for(
-            "cases.case_detail",
-            case_id=case.id
+            "cases.documents"
         )
     )
 
 
+@cases.route(
+    "/document/<int:document_id>/delete",
+    methods=["POST"]
+)
+@login_required
+def delete_document(document_id):
+
+    document = (
+        Document.query
+        .filter_by(
+            id=document_id
+        )
+        .first_or_404()
+    )
+
+    case = (
+        Case.query
+        .filter_by(
+            id=document.case_id,
+            user_id=current_user.id
+        )
+        .first_or_404()
+    )
+
+    if document.filepath and os.path.exists(
+        document.filepath
+    ):
+
+        try:
+
+            os.remove(
+                document.filepath
+            )
+
+        except Exception as error:
+
+            print(
+                "Ошибка удаления файла:",
+                error
+            )
+
+    db.session.delete(
+        document
+    )
+
+    db.session.commit()
+
+    flash(
+        "Документ удалён.",
+        "success"
+    )
+
+    return redirect(
+        url_for(
+            "cases.documents"
+        )
+    )
+
+
+@cases.route(
+    "/document/<int:document_id>/rename",
+    methods=["POST"]
+)
+@login_required
+def rename_document(document_id):
+
+    document = (
+        Document.query
+        .filter_by(
+            id=document_id
+        )
+        .first_or_404()
+    )
+
+    case = (
+        Case.query
+        .filter_by(
+            id=document.case_id,
+            user_id=current_user.id
+        )
+        .first_or_404()
+    )
+
+    new_filename = request.form.get(
+        "filename",
+        ""
+    ).strip()
+
+    if not new_filename:
+
+        flash(
+            "Введите новое название документа.",
+            "error"
+        )
+
+        return redirect(
+            url_for(
+                "cases.documents"
+            )
+        )
+
+    extension = document.file_type
+
+    if not new_filename.lower().endswith(
+        "." + extension
+    ):
+
+        new_filename += "." + extension
+
+    document.filename = secure_filename(
+        new_filename
+    )
+
+    db.session.commit()
+
+    flash(
+        "Название документа изменено.",
+        "success"
+    )
+
+    return redirect(
+        url_for(
+            "cases.documents"
+        )
+    )
+
+@cases.route(
+    "/document/<int:document_id>/file",
+    methods=["GET"]
+)
+@login_required
+def document_file(document_id):
+
+    document = (
+        Document.query
+        .filter_by(
+            id=document_id
+        )
+        .first_or_404()
+    )
+
+    Case.query.filter_by(
+        id=document.case_id,
+        user_id=current_user.id
+    ).first_or_404()
+
+    if not document.filepath or not os.path.exists(
+        document.filepath
+    ):
+        flash(
+            "Файл документа не найден.",
+            "error"
+        )
+
+        return redirect(
+            url_for(
+                "cases.document_detail",
+                document_id=document.id
+            )
+        )
+
+    from flask import send_file
+
+    return send_file(
+        document.filepath,
+        as_attachment=False,
+        download_name=document.filename
+    )
 @cases.route(
     "/document/<int:document_id>",
     methods=["GET"]
@@ -292,10 +596,53 @@ def document_detail(document_id):
         .first_or_404()
     )
 
+    analysis = None
+
+    if document.ai_analysis:
+
+        try:
+
+            analysis = json.loads(
+                document.ai_analysis
+            )
+
+            if isinstance(
+                analysis,
+                str
+            ):
+
+                analysis = {
+                    "answer": analysis,
+                    "risks": []
+                }
+
+            elif not isinstance(
+                analysis,
+                dict
+            ):
+
+                analysis = {
+                    "answer": str(analysis),
+                    "risks": []
+                }
+
+        except Exception as error:
+
+            print(
+                "Ошибка чтения AI-анализа:",
+                error
+            )
+
+            analysis = {
+                "answer": document.ai_analysis,
+                "risks": []
+            }
+
     return render_template(
         "document.html",
         document=document,
-        case=case
+        case=case,
+        analysis=analysis
     )
 
 
@@ -323,10 +670,12 @@ def analyze_document_route(document_id):
         .first_or_404()
     )
 
-    if not document.extracted_text:
+    if not document.filepath or not os.path.exists(
+        document.filepath
+    ):
 
         flash(
-            "В документе нет текста для анализа.",
+            "Файл документа не найден.",
             "error"
         )
 
@@ -340,10 +689,52 @@ def analyze_document_route(document_id):
     try:
 
         analysis = analyze_document(
-            document.extracted_text
+            document.extracted_text,
+            document.filepath
         )
 
-        document.ai_analysis = analysis
+        if isinstance(
+            analysis,
+            str
+        ):
+
+            try:
+
+                analysis = json.loads(
+                    analysis
+                )
+
+            except Exception:
+
+                analysis = {
+                    "answer": analysis,
+                    "risks": []
+                }
+
+        if not isinstance(
+            analysis,
+            dict
+        ):
+
+            analysis = {
+                "answer": str(analysis),
+                "risks": []
+            }
+
+        if "answer" not in analysis:
+
+            analysis["answer"] = (
+                "Анализ документа выполнен."
+            )
+
+        if "risks" not in analysis:
+
+            analysis["risks"] = []
+
+        document.ai_analysis = json.dumps(
+            analysis,
+            ensure_ascii=False
+        )
 
         db.session.commit()
 

@@ -1,0 +1,260 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}{{ template.title }} — LegalAI{% endblock %}
+
+{% block content %}
+
+<div class="workspace">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            WORKSPACE
+        </div>
+
+        <a
+            href="{{ url_for('main.dashboard') }}"
+            class="sidebar-link"
+        >
+            <span>⌂</span>
+            <span>Главная</span>
+        </a>
+
+        <a
+            href="{{ url_for('cases.case_list') }}"
+            class="sidebar-link"
+        >
+            <span>▣</span>
+            <span>Мои дела</span>
+        </a>
+
+        <a
+            href="{{ url_for('cases.documents') }}"
+            class="sidebar-link"
+        >
+            <span>▤</span>
+            <span>Документы</span>
+        </a>
+
+        <a
+            href="{{ url_for('main.ai_assistant') }}"
+            class="sidebar-link"
+        >
+            <span>✦</span>
+            <span>AI-помощник</span>
+        </a>
+
+        <a
+            href="{{ url_for('main.templates_page') }}"
+            class="sidebar-link active"
+        >
+            <span>▱</span>
+            <span>Шаблоны</span>
+        </a>
+
+        <a
+            href="{{ url_for('main.settings') }}"
+            class="sidebar-link"
+        >
+            <span>⚙</span>
+            <span>Настройки</span>
+        </a>
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="sidebar-link"
+            >
+                <span>↪</span>
+                <span>Выйти</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <section class="workspace-content">
+
+        <div class="case-top">
+
+            <a
+                href="{{ url_for('main.templates_page') }}"
+                class="back-link"
+            >
+                ← Вернуться к шаблонам
+            </a>
+
+        </div>
+
+
+        <div class="workspace-header">
+
+            <div>
+
+                <div class="workspace-label">
+                    LEGALAI TEMPLATE
+                </div>
+
+                <h1>
+                    {{ template.title }}
+                </h1>
+
+                <p>
+                    {{ template.description }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="case-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Содержание шаблона
+                    </h2>
+
+                    <p>
+                        Используйте этот шаблон как основу
+                        для подготовки документа.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="template-content">
+
+                <pre>{{ template.content }}</pre>
+
+            </div>
+
+
+            <div class="template-actions">
+
+                <button
+                    type="button"
+                    class="button primary"
+                    onclick="window.print()"
+                >
+                    🖨 Печать
+                </button>
+
+                <a
+                    href="{{ url_for('main.templates_page') }}"
+                    class="button secondary"
+                >
+                    ← Все шаблоны
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<style>
+
+.template-content {
+    margin-top: 24px;
+    background: #FDFBF8;
+    border: 1px solid #E9D9CC;
+    border-radius: 18px;
+    padding: 30px;
+    overflow-x: auto;
+}
+
+.template-content pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #2D1F1A;
+}
+
+.template-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.template-actions .button {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.template-actions .primary {
+    background: #F46A2A;
+    color: #FFFFFF;
+}
+
+.template-actions .secondary {
+    background: #FFE6D8;
+    color: #2D1F1A;
+}
+
+.template-actions .button:hover {
+    opacity: 0.9;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #8B6F63;
+    font-size: 14px;
+}
+
+.back-link:hover {
+    color: #F46A2A;
+}
+
+@media print {
+
+    .sidebar,
+    .case-top,
+    .template-actions {
+        display: none;
+    }
+
+    .workspace-content {
+        width: 100%;
+    }
+
+    .template-content {
+        border: none;
+        padding: 0;
+        background: white;
+    }
+
+    .template-content pre {
+        font-size: 12pt;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+```

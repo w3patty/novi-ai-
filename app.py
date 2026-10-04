@@ -44,6 +44,7 @@ def create_app():
 
     from models.case import Case
     from models.document import Document
+    from models.chat_message import ChatMessage
 
     # ==========================================
     # DATABASE CREATE

@@ -17,6 +17,8 @@
         </div>
 
 
+        <!-- ГЛАВНАЯ -->
+
         <a
             href="{{ url_for('main.dashboard') }}"
             class="sidebar-link"
@@ -25,6 +27,8 @@
             <span>Главная</span>
         </a>
 
+
+        <!-- МОИ ДЕЛА -->
 
         <a
             href="{{ url_for('cases.case_list') }}"
@@ -35,52 +39,85 @@
         </a>
 
 
+        <!-- ДОКУМЕНТЫ -->
+
         <a
-            href="#"
-            class="sidebar-link disabled"
+            href="{{ url_for('cases.documents') }}"
+            class="sidebar-link"
         >
             <span>▤</span>
             <span>Документы</span>
-            <small>Скоро</small>
         </a>
 
 
+        <!-- AI ASSISTANT -->
+
         <a
-            href="#"
-            class="sidebar-link disabled"
+            href="{{ url_for('main.ai_assistant') }}"
+            class="sidebar-link"
         >
             <span>✦</span>
             <span>AI Assistant</span>
-            <small>Скоро</small>
         </a>
 
+
+        <!-- ==========================================
+             ИНСТРУМЕНТЫ
+        ========================================== -->
 
         <div class="sidebar-title tools-title">
             ИНСТРУМЕНТЫ
         </div>
 
 
+        <!-- ШАБЛОНЫ -->
+
         <a
-            href="#"
-            class="sidebar-link disabled"
+            href="{{ url_for('main.templates_page') }}"
+            class="sidebar-link"
         >
             <span>▱</span>
             <span>Шаблоны</span>
-            <small>Скоро</small>
         </a>
 
 
+        <!-- НАСТРОЙКИ -->
+
         <a
-            href="#"
-            class="sidebar-link disabled"
+            href="{{ url_for('main.settings') }}"
+            class="sidebar-link"
         >
             <span>⚙</span>
             <span>Настройки</span>
-            <small>Скоро</small>
         </a>
 
 
+        <!-- ==========================================
+             USER
+        ========================================== -->
+
         <div class="sidebar-bottom">
+
+            <div class="user-card">
+
+                <div class="user-avatar">
+                    {{ current_user.username[0]|upper }}
+                </div>
+
+                <div class="user-info">
+
+                    <strong>
+                        {{ current_user.username }}
+                    </strong>
+
+                    <span>
+                        {{ current_user.email }}
+                    </span>
+
+                </div>
+
+            </div>
+
 
             <a
                 href="{{ url_for('auth.logout') }}"
@@ -166,7 +203,6 @@
 
                     <div class="case-card">
 
-
                         <!-- CASE MAIN -->
 
                         <div class="case-main">
@@ -174,7 +210,6 @@
                             <div class="case-icon">
                                 ▣
                             </div>
-
 
                             <div>
 
@@ -203,9 +238,7 @@
 
                             <span class="case-date">
 
-                                {{ case.created_at.strftime(
-                                    '%d.%m.%Y'
-                                ) }}
+                                {{ case.created_at.strftime('%d.%m.%Y') }}
 
                             </span>
 
@@ -230,7 +263,6 @@
 
 
         {% else %}
-
 
             <!-- ==========================================
                  EMPTY STATE
@@ -263,7 +295,6 @@
                 </button>
 
             </div>
-
 
         {% endif %}
 
@@ -323,7 +354,6 @@
             id="caseCreateForm"
         >
 
-
             <!-- TITLE -->
 
             <div class="form-group">
@@ -331,7 +361,6 @@
                 <label for="caseTitle">
                     Название дела
                 </label>
-
 
                 <input
                     type="text"
@@ -353,7 +382,6 @@
                     Клиент
                 </label>
 
-
                 <input
                     type="text"
                     id="caseClient"
@@ -373,7 +401,6 @@
                 <label for="caseDescription">
                     Описание
                 </label>
-
 
                 <textarea
                     id="caseDescription"
@@ -415,33 +442,19 @@ document.addEventListener(
 
 
         const openButton =
-            document.getElementById(
-                "openCaseButton"
-            );
+            document.getElementById("openCaseButton");
 
 
         const emptyOpenButton =
-            document.getElementById(
-                "openEmptyCaseButton"
-            );
+            document.getElementById("openEmptyCaseButton");
 
 
         const closeButton =
-            document.getElementById(
-                "closeCaseButton"
-            );
-
-
-        const form =
-            document.getElementById(
-                "caseCreateForm"
-            );
+            document.getElementById("closeCaseButton");
 
 
         const titleInput =
-            document.getElementById(
-                "caseTitle"
-            );
+            document.getElementById("caseTitle");
 
 
         /*
@@ -451,22 +464,10 @@ document.addEventListener(
         function openModal() {
 
             if (!modal) {
-
-                console.error(
-                    "LegalAI: caseModal не найден."
-                );
-
                 return;
             }
 
-
             modal.classList.add("show");
-
-
-            /*
-             * Автоматически ставим курсор
-             * в поле названия дела.
-             */
 
             setTimeout(
                 function () {
@@ -478,7 +479,6 @@ document.addEventListener(
                 },
                 100
             );
-
         }
 
 
@@ -493,7 +493,6 @@ document.addEventListener(
             }
 
             modal.classList.remove("show");
-
         }
 
 
@@ -505,9 +504,7 @@ document.addEventListener(
 
             openButton.addEventListener(
                 "click",
-                function (event) {
-
-                    event.preventDefault();
+                function () {
 
                     openModal();
 
@@ -525,9 +522,7 @@ document.addEventListener(
 
             emptyOpenButton.addEventListener(
                 "click",
-                function (event) {
-
-                    event.preventDefault();
+                function () {
 
                     openModal();
 
@@ -545,9 +540,7 @@ document.addEventListener(
 
             closeButton.addEventListener(
                 "click",
-                function (event) {
-
-                    event.preventDefault();
+                function () {
 
                     closeModal();
 
@@ -567,9 +560,7 @@ document.addEventListener(
                 "click",
                 function (event) {
 
-                    if (
-                        event.target === modal
-                    ) {
+                    if (event.target === modal) {
 
                         closeModal();
 
@@ -601,44 +592,6 @@ document.addEventListener(
 
             }
         );
-
-
-        /*
-         * FORM SUBMIT
-         *
-         * Здесь ничего дополнительно
-         * делать не нужно.
-         * Flask получит POST /case.
-         */
-
-        if (form) {
-
-            form.addEventListener(
-                "submit",
-                function () {
-
-                    const title =
-                        document.getElementById(
-                            "caseTitle"
-                        ).value.trim();
-
-
-                    const client =
-                        document.getElementById(
-                            "caseClient"
-                        ).value.trim();
-
-
-                    if (!title || !client) {
-
-                        return;
-
-                    }
-
-                }
-            );
-
-        }
 
     }
 );

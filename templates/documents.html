@@ -1,0 +1,1057 @@
+{% extends "base.html" %}
+
+{% block title %}
+Документы
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.documents-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 50px;
+}
+
+.documents-header {
+    margin-bottom: 30px;
+}
+
+.documents-header h1 {
+    margin: 0 0 8px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #2D1F1A;
+}
+
+.documents-header p {
+    margin: 0;
+    color: #8B6F63;
+    font-size: 15px;
+}
+
+
+/* =========================
+   СЕТКА
+========================= */
+
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+
+/* =========================
+   КАРТОЧКА
+========================= */
+
+.document-card {
+    background: #FFFFFF;
+    border: 1px solid #E9D9CC;
+    border-radius: 22px;
+    padding: 22px;
+
+    display: flex;
+    flex-direction: column;
+
+    min-height: 245px;
+
+    box-shadow: 0 4px 14px rgba(45, 31, 26, 0.04);
+
+    transition: all 0.2s ease;
+}
+
+.document-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow: 0 10px 28px rgba(45, 31, 26, 0.09);
+
+    border-color: #F3C8B0;
+}
+
+
+/* =========================
+   ВЕРХ КАРТОЧКИ
+========================= */
+
+.document-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+
+/* =========================
+   ИКОНКА
+========================= */
+
+.file-icon {
+    width: 58px;
+    height: 58px;
+    min-width: 58px;
+
+    border-radius: 16px;
+
+    background: #FFF1E9;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 27px;
+}
+
+
+/* =========================
+   НАЗВАНИЕ
+========================= */
+
+.document-main {
+    min-width: 0;
+    flex: 1;
+}
+
+.document-name {
+    margin: 2px 0 8px;
+
+    font-size: 17px;
+    line-height: 1.35;
+    font-weight: 700;
+
+    color: #2D1F1A;
+
+    word-break: break-word;
+}
+
+
+/* =========================
+   ТИП
+========================= */
+
+.document-type {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 5px 9px;
+
+    border-radius: 8px;
+
+    background: #F8F3EF;
+
+    color: #8B6F63;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================
+   ИНФОРМАЦИЯ
+========================= */
+
+.document-info {
+    margin-top: 22px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    color: #6F5A50;
+
+    font-size: 13px;
+}
+
+.info-icon {
+    width: 25px;
+    height: 25px;
+
+    flex-shrink: 0;
+
+    border-radius: 8px;
+
+    background: #FFF7F2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   НИЖНЯЯ ЧАСТЬ
+========================= */
+
+.document-footer {
+    margin-top: auto;
+
+    padding-top: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-top: 1px solid #F1E5DE;
+}
+
+
+/* =========================
+   ОТКРЫТЬ
+========================= */
+
+.document-open {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 10px 17px;
+
+    border-radius: 11px;
+
+    background: #F46A2A;
+
+    color: #FFFFFF;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: all 0.2s ease;
+}
+
+.document-open:hover {
+    background: #E75D20;
+
+    color: #FFFFFF;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   КНОПКИ
+========================= */
+
+.document-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.document-action {
+    width: 40px;
+    height: 40px;
+
+    border: none;
+
+    border-radius: 11px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    font-size: 17px;
+
+    transition: all 0.2s ease;
+}
+
+
+/* Переименовать */
+
+.document-rename {
+    background: #FFF7F2;
+
+    color: #B87555;
+}
+
+.document-rename:hover {
+    background: #FFE9DE;
+
+    color: #A75F40;
+}
+
+
+/* Удалить */
+
+.document-delete {
+    background: #FFF4F1;
+
+    color: #D96B57;
+}
+
+.document-delete:hover {
+    background: #FFE3DC;
+
+    color: #C94F39;
+}
+
+
+/* =========================
+   ПУСТАЯ СТРАНИЦА
+========================= */
+
+.documents-empty {
+    background: #FFFFFF;
+
+    border: 1px dashed #E3CEC0;
+
+    border-radius: 22px;
+
+    padding: 70px 30px;
+
+    text-align: center;
+
+    color: #8B6F63;
+}
+
+.documents-empty-icon {
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 20px;
+
+    background: #FFF1E9;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 32px;
+}
+
+.documents-empty h3 {
+    margin: 0 0 8px;
+
+    color: #2D1F1A;
+
+    font-size: 19px;
+}
+
+.documents-empty p {
+    margin: 0;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   МОДАЛЬНОЕ ОКНО
+========================= */
+
+.rename-modal {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    background: rgba(45, 31, 26, 0.28);
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.rename-modal.active {
+    display: flex;
+}
+
+
+/* Окно */
+
+.rename-modal-content {
+    width: 100%;
+    max-width: 430px;
+
+    box-sizing: border-box;
+
+    background: #FFFFFF;
+
+    border-radius: 24px;
+
+    padding: 26px;
+
+    box-shadow: 0 20px 60px rgba(45, 31, 26, 0.18);
+
+    animation: renameModalShow 0.18s ease;
+}
+
+@keyframes renameModalShow {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+/* Заголовок окна */
+
+.rename-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 22px;
+}
+
+.rename-modal-header h2 {
+    margin: 0;
+
+    color: #2D1F1A;
+
+    font-size: 21px;
+}
+
+.rename-modal-close {
+    width: 34px;
+    height: 34px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #F8F3EF;
+
+    color: #8B6F63;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rename-modal-close:hover {
+    background: #F1E5DE;
+}
+
+
+/* Поле */
+
+.rename-modal-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #6F5A50;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.rename-modal-input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 13px 14px;
+
+    border: 1px solid #E9D9CC;
+
+    border-radius: 12px;
+
+    outline: none;
+
+    font-size: 14px;
+
+    color: #2D1F1A;
+
+    background: #FFFCFA;
+}
+
+.rename-modal-input:focus {
+    border-color: #F46A2A;
+}
+
+
+/* Кнопки окна */
+
+.rename-modal-buttons {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+.rename-modal-cancel,
+.rename-modal-save {
+    flex: 1;
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.rename-modal-cancel {
+    background: #F8F3EF;
+
+    color: #6F5A50;
+}
+
+.rename-modal-cancel:hover {
+    background: #F1E5DE;
+}
+
+.rename-modal-save {
+    background: #F46A2A;
+
+    color: #FFFFFF;
+}
+
+.rename-modal-save:hover {
+    background: #E75D20;
+}
+
+
+/* =========================
+   АДАПТИВ
+========================= */
+
+@media (max-width: 850px) {
+
+    .documents-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .documents-page {
+        padding: 24px 16px 40px;
+    }
+
+    .documents-header h1 {
+        font-size: 27px;
+    }
+
+    .document-card {
+        padding: 18px;
+    }
+
+    .rename-modal-content {
+        padding: 22px;
+    }
+
+}
+
+</style>
+
+
+<div class="workspace">
+
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            WORKSPACE
+        </div>
+
+
+        <a
+            href="{{ url_for('main.dashboard') }}"
+            class="sidebar-link"
+        >
+            <span>⌂</span>
+            <span>Главная</span>
+        </a>
+
+
+        <a
+            href="{{ url_for('cases.case_list') }}"
+            class="sidebar-link"
+        >
+            <span>▣</span>
+            <span>Мои дела</span>
+        </a>
+
+
+        <a
+            href="{{ url_for('cases.documents') }}"
+            class="sidebar-link active"
+        >
+            <span>▤</span>
+            <span>Документы</span>
+        </a>
+
+
+        <a
+            href="{{ url_for('main.ai_assistant') }}"
+            class="sidebar-link"
+        >
+            <span>✦</span>
+            <span>AI Assistant</span>
+        </a>
+
+
+        <div class="sidebar-title tools-title">
+            ИНСТРУМЕНТЫ
+        </div>
+
+
+        <a
+            href="{{ url_for('main.templates_page') }}"
+            class="sidebar-link"
+        >
+            <span>▱</span>
+            <span>Шаблоны</span>
+        </a>
+
+
+        <a
+            href="{{ url_for('main.settings') }}"
+            class="sidebar-link"
+        >
+            <span>⚙</span>
+            <span>Настройки</span>
+        </a>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="user-card">
+
+                <div class="user-avatar">
+                    {{ user.username[0]|upper }}
+                </div>
+
+                <div class="user-info">
+
+                    <strong>
+                        {{ user.username }}
+                    </strong>
+
+                    <span>
+                        {{ user.email }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="logout"
+            >
+                Выйти
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         ОСНОВНАЯ ОБЛАСТЬ
+    ========================= -->
+
+    <section class="workspace-content">
+
+        <div class="documents-page">
+
+            <div class="documents-header">
+
+                <h1>
+                    Документы
+                </h1>
+
+                <p>
+                    Все документы из ваших дел
+                </p>
+
+            </div>
+
+
+            {% if documents %}
+
+                <div class="documents-grid">
+
+                    {% for document in documents %}
+
+                        <div
+                            class="document-card"
+                            data-document-id="{{ document.id }}"
+                            data-document-name="{{ document.filename }}"
+                        >
+
+                            <div class="document-top">
+
+                                <div class="file-icon">
+
+                                    {% if document.file_type == "pdf" %}
+
+                                        📕
+
+                                    {% elif document.file_type in ["doc", "docx"] %}
+
+                                        📘
+
+                                    {% elif document.file_type in ["xls", "xlsx"] %}
+
+                                        📗
+
+                                    {% elif document.file_type in ["jpg", "jpeg", "png"] %}
+
+                                        🖼️
+
+                                    {% elif document.file_type == "txt" %}
+
+                                        📄
+
+                                    {% else %}
+
+                                        📎
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="document-main">
+
+                                    <div class="document-name">
+                                        {{ document.filename }}
+                                    </div>
+
+
+                                    <span class="document-type">
+                                        {{ document.file_type }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="document-info">
+
+                                <div class="info-row">
+
+                                    <div class="info-icon">
+                                        📁
+                                    </div>
+
+                                    <span>
+                                        {{ document.case.title }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="info-row">
+
+                                    <div class="info-icon">
+                                        🕐
+                                    </div>
+
+                                    <span>
+
+                                        {% if document.created_at %}
+
+                                            Загружен
+                                            {{ document.created_at.strftime('%d.%m.%Y %H:%M') }}
+
+                                        {% else %}
+
+                                            Дата загрузки неизвестна
+
+                                        {% endif %}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="document-footer">
+
+                                <a
+                                    href="{{ url_for(
+                                        'cases.document_detail',
+                                        document_id=document.id
+                                    ) }}"
+                                    class="document-open"
+                                >
+                                    Открыть
+                                    <span>→</span>
+                                </a>
+
+
+                                <div class="document-actions">
+
+                                    <button
+                                        type="button"
+                                        class="document-action document-rename"
+                                        title="Переименовать"
+                                        data-document-id="{{ document.id }}"
+                                        data-document-name="{{ document.filename }}"
+                                        onclick="openRenameModalFromButton(this)"
+                                    >
+                                        ✏️
+                                    </button>
+
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'cases.delete_document',
+                                            document_id=document.id
+                                        ) }}"
+                                        onsubmit="return confirm('Вы действительно хотите удалить этот документ?');"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="document-action document-delete"
+                                            title="Удалить документ"
+                                        >
+                                            🗑️
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+            {% else %}
+
+                <div class="documents-empty">
+
+                    <div class="documents-empty-icon">
+                        📁
+                    </div>
+
+                    <h3>
+                        Документов пока нет
+                    </h3>
+
+                    <p>
+                        Загруженные документы появятся здесь.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =========================
+                 ОКНО ПЕРЕИМЕНОВАНИЯ
+            ========================= -->
+
+            <div
+                class="rename-modal"
+                id="renameModal"
+            >
+
+                <div class="rename-modal-content">
+
+                    <div class="rename-modal-header">
+
+                        <h2>
+                            Переименовать документ
+                        </h2>
+
+
+                        <button
+                            type="button"
+                            class="rename-modal-close"
+                            onclick="closeRenameModal()"
+                        >
+                            ×
+                        </button>
+
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        id="renameForm"
+                    >
+
+                        <label
+                            for="renameInput"
+                            class="rename-modal-label"
+                        >
+                            Новое название
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="renameInput"
+                            name="filename"
+                            class="rename-modal-input"
+                            required
+                            autocomplete="off"
+                        >
+
+
+                        <div class="rename-modal-buttons">
+
+                            <button
+                                type="button"
+                                class="rename-modal-cancel"
+                                onclick="closeRenameModal()"
+                            >
+                                Отмена
+                            </button>
+
+
+                            <button
+                                type="submit"
+                                class="rename-modal-save"
+                            >
+                                Сохранить
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+function openRenameModalFromButton(button) {
+
+    const documentId =
+        button.getAttribute("data-document-id");
+
+    const documentName =
+        button.getAttribute("data-document-name");
+
+
+    const modal =
+        document.getElementById("renameModal");
+
+    const input =
+        document.getElementById("renameInput");
+
+    const form =
+        document.getElementById("renameForm");
+
+
+    input.value = documentName;
+
+
+    form.action =
+        "/document/" +
+        documentId +
+        "/rename";
+
+
+    modal.classList.add("active");
+
+
+    setTimeout(function() {
+
+        input.focus();
+
+        input.select();
+
+    }, 100);
+
+}
+
+
+function closeRenameModal() {
+
+    const modal =
+        document.getElementById("renameModal");
+
+    modal.classList.remove("active");
+
+}
+
+
+document.getElementById("renameModal").addEventListener(
+    "click",
+    function(event) {
+
+        if (event.target === this) {
+
+            closeRenameModal();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+
+            closeRenameModal();
+
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}

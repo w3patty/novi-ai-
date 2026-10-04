@@ -1,3 +1,4 @@
+```html
 {% extends "base.html" %}
 
 {% block title %}{{ case.title }} — LegalAI{% endblock %}
@@ -12,47 +13,84 @@
             WORKSPACE
         </div>
 
-        <a href="{{ url_for('main.dashboard') }}" class="sidebar-link">
+        <a
+            href="{{ url_for('main.dashboard') }}"
+            class="sidebar-link"
+        >
             <span>⌂</span>
             <span>Главная</span>
         </a>
 
-        <a href="{{ url_for('cases.case_list') }}" class="sidebar-link active">
+        <a
+            href="{{ url_for('cases.case_list') }}"
+            class="sidebar-link active"
+        >
             <span>▣</span>
             <span>Мои дела</span>
         </a>
 
-        <a href="#" class="sidebar-link disabled">
+        <a
+            href="{{ url_for('cases.documents') }}"
+            class="sidebar-link"
+        >
             <span>▤</span>
             <span>Документы</span>
-            <small>Скоро</small>
         </a>
 
-        <a href="#" class="sidebar-link disabled">
+        <a
+            href="{{ url_for('main.ai_assistant') }}"
+            class="sidebar-link"
+        >
             <span>✦</span>
             <span>AI Assistant</span>
-            <small>Скоро</small>
         </a>
 
         <div class="sidebar-title tools-title">
             ИНСТРУМЕНТЫ
         </div>
 
-        <a href="#" class="sidebar-link disabled">
+        <a
+            href="{{ url_for('main.templates_page') }}"
+            class="sidebar-link"
+        >
             <span>▱</span>
             <span>Шаблоны</span>
-            <small>Скоро</small>
         </a>
 
-        <a href="#" class="sidebar-link disabled">
+        <a
+            href="{{ url_for('main.settings') }}"
+            class="sidebar-link"
+        >
             <span>⚙</span>
             <span>Настройки</span>
-            <small>Скоро</small>
         </a>
 
         <div class="sidebar-bottom">
 
-            <a href="{{ url_for('auth.logout') }}" class="logout">
+            <div class="user-card">
+
+                <div class="user-avatar">
+                    {{ current_user.username[0]|upper }}
+                </div>
+
+                <div class="user-info">
+
+                    <strong>
+                        {{ current_user.username }}
+                    </strong>
+
+                    <span>
+                        LegalAI
+                    </span>
+
+                </div>
+
+            </div>
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="logout"
+            >
                 Выйти
             </a>
 
@@ -63,15 +101,17 @@
 
     <section class="workspace-content">
 
-        <a
-            href="{{ url_for('cases.case_list') }}"
-            class="back-link"
-        >
-            ← Вернуться к делам
-        </a>
+        <div class="case-top">
 
+            <a
+                href="{{ url_for('cases.case_list') }}"
+                class="back-link"
+            >
+                ← Вернуться к моим делам
+            </a>
 
-        <!-- HEADER -->
+        </div>
+
 
         <div class="case-header">
 
@@ -102,24 +142,29 @@
 
             <div class="case-header-actions">
 
-                <span class="case-status">
+                <span class="status-badge">
                     {{ case.status }}
                 </span>
 
-                <button
-                    type="button"
-                    class="button primary"
-                    disabled
+                <form
+                    method="POST"
+                    action="{{ url_for('cases.delete_case', case_id=case.id) }}"
+                    onsubmit="return confirm('Вы действительно хотите удалить это дело и все связанные документы?');"
                 >
-                    ✦ AI Assistant
-                </button>
+
+                    <button
+                        type="submit"
+                        class="button secondary"
+                    >
+                        🗑️ Удалить дело
+                    </button>
+
+                </form>
 
             </div>
 
         </div>
 
-
-        <!-- FLASH -->
 
         {% with messages = get_flashed_messages(with_categories=true) %}
 
@@ -137,8 +182,6 @@
 
         {% endwith %}
 
-
-        <!-- INFO -->
 
         <div class="case-info-grid">
 
@@ -183,99 +226,45 @@
         </div>
 
 
-        <!-- DESCRIPTION + AI -->
+        <div class="case-panel">
 
-        <div class="case-content-grid">
+            <div class="panel-header">
 
-            <div class="case-panel">
+                <div>
 
-                <div class="panel-header">
-
-                    <div>
-
-                        <h2>
-                            Описание дела
-                        </h2>
-
-                        <p>
-                            Основная информация
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="case-description">
-
-                    {% if case.description %}
-
-                        {{ case.description }}
-
-                    {% else %}
-
-                        <span class="muted">
-                            Описание пока не добавлено.
-                        </span>
-
-                    {% endif %}
-
-                </div>
-
-            </div>
-
-
-            <div class="case-panel">
-
-                <div class="panel-header">
-
-                    <div>
-
-                        <h2>
-                            AI Assistant
-                        </h2>
-
-                        <p>
-                            Помощник по этому делу
-                        </p>
-
-                    </div>
-
-                    <div class="ai-status">
-
-                        <span></span>
-                        AI
-
-                    </div>
-
-                </div>
-
-
-                <div class="ai-placeholder">
-
-                    <div class="ai-placeholder-icon">
-                        ✦
-                    </div>
-
-                    <h3>
-                        AI-помощник готов
-                    </h3>
+                    <h2>
+                        Информация о деле
+                    </h2>
 
                     <p>
-                        Загрузите юридический документ,
-                        чтобы подготовить его к AI-анализу.
+                        Основная информация по текущему делу
                     </p>
 
                 </div>
 
             </div>
 
+
+            <div class="case-description">
+
+                {% if case.description %}
+
+                    {{ case.description }}
+
+                {% else %}
+
+                    <span class="muted">
+                        Описание дела не добавлено.
+                    </span>
+
+                {% endif %}
+
+            </div>
+
         </div>
 
 
-        <!-- DOCUMENTS -->
-
-        <div class="case-panel documents-panel">
+        <div class="case-panel">
 
             <div class="panel-header">
 
@@ -286,129 +275,72 @@
                     </h2>
 
                     <p>
-                        Материалы юридического дела
+                        Документы этого дела находятся в разделе «Документы».
                     </p>
 
                 </div>
 
-
-                <button
-                    type="button"
-                    class="button primary"
-                    onclick="openDocumentPicker()"
+                <a
+                    href="{{ url_for('cases.documents') }}"
+                    class="button secondary"
                 >
-                    + Загрузить документ
-                </button>
+                    Открыть документы
+                </a>
 
             </div>
 
 
-            <div class="document-counter">
+            <div class="ai-placeholder">
 
-                Документов в этом деле:
+                <div class="ai-placeholder-icon">
+                    ▤
+                </div>
 
-                <strong>
-                    {{ case.documents|length }}
-                </strong>
+                <h3>
+                    Работа с документами
+                </h3>
 
-            </div>
+                <p>
+                    После загрузки документы будут доступны
+                    в разделе «Документы» слева.
+                </p>
 
 
-            <!-- UPLOAD FORM -->
-
-            <form
-                id="uploadForm"
-                method="POST"
-                action="{{ url_for(
-                    'cases.upload_document',
-                    case_id=case.id
-                ) }}"
-                enctype="multipart/form-data"
-            >
-
-                <input
-                    type="file"
-                    id="documentInput"
-                    name="document"
-                    accept=".pdf,.docx,.txt"
-                    hidden
+                <form
+                    method="POST"
+                    action="{{ url_for('cases.upload_document', case_id=case.id) }}"
+                    enctype="multipart/form-data"
+                    id="uploadForm"
                 >
 
-            </form>
+                    <input
+                        type="file"
+                        name="document"
+                        id="document"
+                        accept=".pdf,.docx,.txt"
+                        required
+                        style="display: none;"
+                    >
 
+                    <label
+                        for="document"
+                        class="button primary upload-button"
+                    >
+                        ↑ Выбрать документ
+                    </label>
 
-            <!-- DOCUMENT LIST -->
+                    <button
+                        type="submit"
+                        id="uploadSubmit"
+                        class="button primary"
+                        style="display: none;"
+                    >
+                        Загрузить
+                    </button>
 
-            {% if case.documents|length > 0 %}
+                </form>
 
-                <div class="documents-list">
-
-                    {% for document in case.documents %}
-
-                        <a
-                            href="{{ url_for(
-                                'cases.document_detail',
-                                document_id=document.id
-                            ) }}"
-                            class="document-item"
-                        >
-
-                            <div class="document-icon">
-                                ▤
-                            </div>
-
-
-                            <div class="document-info">
-
-                                <strong>
-                                    {{ document.filename }}
-                                </strong>
-
-                                <span>
-
-                                    {{ document.file_type|upper }}
-
-                                    ·
-
-                                    {{ document.created_at.strftime(
-                                        '%d.%m.%Y %H:%M'
-                                    ) }}
-
-                                </span>
-
-                            </div>
-
-
-                            <div class="document-status">
-                                Открыть →
-                            </div>
-
-                        </a>
-
-                    {% endfor %}
-
-                </div>
-
-            {% else %}
-
-                <div class="documents-empty">
-
-                    <div class="documents-icon">
-                        ▤
-                    </div>
-
-                    <h3>
-                        Документов пока нет
-                    </h3>
-
-                    <p>
-                        Загрузите PDF, DOCX или TXT,
-                        чтобы начать работу с документом.
-                    </p>
-
-                </div>
-
-            {% endif %}
+            </div>
 
         </div>
 
@@ -419,46 +351,32 @@
 
 <script>
 
-function openDocumentPicker() {
+const documentInput = document.getElementById("document");
+const uploadForm = document.getElementById("uploadForm");
+const uploadSubmit = document.getElementById("uploadSubmit");
 
-    const input = document.getElementById(
-        "documentInput"
-    );
-
-    if (input) {
-        input.click();
-    }
-}
-
-
-const documentInput =
-    document.getElementById(
-        "documentInput"
-    );
-
-const uploadForm =
-    document.getElementById(
-        "uploadForm"
-    );
-
-
-if (
-    documentInput &&
-    uploadForm
-) {
+if (documentInput && uploadForm && uploadSubmit) {
 
     documentInput.addEventListener(
         "change",
         function () {
 
-            if (
-                documentInput.files &&
-                documentInput.files.length > 0
-            ) {
+            if (documentInput.files.length > 0) {
 
-                uploadForm.submit();
+                uploadSubmit.style.display = "inline-flex";
+                uploadSubmit.textContent = "Загрузить";
 
             }
+
+        }
+    );
+
+    uploadForm.addEventListener(
+        "submit",
+        function () {
+
+            uploadSubmit.disabled = true;
+            uploadSubmit.textContent = "Загрузка...";
 
         }
     );
@@ -468,3 +386,4 @@ if (
 </script>
 
 {% endblock %}
+```

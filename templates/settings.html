@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block title %}Настройки — LegalAI{% endblock %}
+
+{% block content %}
+
+<div class="workspace">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            WORKSPACE
+        </div>
+
+        <a
+            href="{{ url_for('main.dashboard') }}"
+            class="sidebar-link"
+        >
+            <span>⌂</span>
+            <span>Главная</span>
+        </a>
+
+        <a
+            href="{{ url_for('cases.case_list') }}"
+            class="sidebar-link"
+        >
+            <span>▣</span>
+            <span>Мои дела</span>
+        </a>
+
+        <a
+            href="{{ url_for('cases.documents') }}"
+            class="sidebar-link"
+        >
+            <span>▤</span>
+            <span>Документы</span>
+        </a>
+
+        <a
+            href="{{ url_for('main.ai_assistant') }}"
+            class="sidebar-link"
+        >
+            <span>✦</span>
+            <span>AI Assistant</span>
+        </a>
+
+        <div class="sidebar-title tools-title">
+            ИНСТРУМЕНТЫ
+        </div>
+
+        <a
+            href="{{ url_for('main.templates_page') }}"
+            class="sidebar-link"
+        >
+            <span>▱</span>
+            <span>Шаблоны</span>
+        </a>
+
+        <a
+            href="{{ url_for('main.settings') }}"
+            class="sidebar-link active"
+        >
+            <span>⚙</span>
+            <span>Настройки</span>
+        </a>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="user-card">
+
+                <div class="user-avatar">
+                    {{ user.username[0]|upper }}
+                </div>
+
+                <div class="user-info">
+                    <strong>{{ user.username }}</strong>
+                    <span>{{ user.email }}</span>
+                </div>
+
+            </div>
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="logout"
+            >
+                Выйти
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <section class="workspace-content settings-page">
+
+        <div class="settings-header">
+
+            <div class="settings-label">
+                ACCOUNT SETTINGS
+            </div>
+
+            <h1>
+                Настройки
+            </h1>
+
+            <p>
+                Управляйте своим профилем и безопасностью аккаунта.
+            </p>
+
+        </div>
+
+
+        <!-- ПРОФИЛЬ -->
+
+        <section class="settings-card">
+
+            <div class="settings-card-header">
+
+                <div>
+
+                    <div class="settings-card-title">
+                        Профиль
+                    </div>
+
+                    <div class="settings-card-description">
+                        Основная информация вашего аккаунта.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-preview">
+
+                <div class="profile-avatar">
+                    {{ user.username[0]|upper }}
+                </div>
+
+                <div class="profile-info">
+
+                    <h3>
+                        {{ user.username }}
+                    </h3>
+
+                    <p>
+                        {{ user.email }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="settings-divider"></div>
+
+
+            <div class="settings-form-section">
+
+                <div class="settings-form-heading">
+
+                    <h3>
+                        Изменить профиль
+                    </h3>
+
+                    <p>
+                        Обновите имя пользователя или email.
+                    </p>
+
+                </div>
+
+
+                <form
+                    method="POST"
+                    class="settings-form"
+                >
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="profile"
+                    >
+
+                    <div class="settings-field">
+
+                        <label for="username">
+                            Имя пользователя
+                        </label>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            value="{{ user.username }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="settings-field">
+
+                        <label for="email">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ user.email }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="settings-button"
+                    >
+                        Сохранить изменения
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- БЕЗОПАСНОСТЬ -->
+
+        <section class="settings-card">
+
+            <div class="settings-card-header">
+
+                <div>
+
+                    <div class="settings-card-title">
+                        Безопасность
+                    </div>
+
+                    <div class="settings-card-description">
+                        Изменение пароля аккаунта.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="settings-form-section">
+
+                <form
+                    method="POST"
+                    class="settings-form"
+                >
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="password"
+                    >
+
+                    <div class="settings-field">
+
+                        <label for="current_password">
+                            Текущий пароль
+                        </label>
+
+                        <input
+                            type="password"
+                            id="current_password"
+                            name="current_password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="settings-field">
+
+                        <label for="new_password">
+                            Новый пароль
+                        </label>
+
+                        <input
+                            type="password"
+                            id="new_password"
+                            name="new_password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="settings-field">
+
+                        <label for="confirm_password">
+                            Подтвердите новый пароль
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="settings-button"
+                    >
+                        Изменить пароль
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- LEGALAI -->
+
+        <section class="settings-info-card">
+
+            <div class="settings-info-icon">
+                ⚙
+            </div>
+
+            <div class="settings-info-content">
+
+                <h3>
+                    Настройки LegalAI
+                </h3>
+
+                <p>
+                    Здесь можно управлять данными профиля
+                    и безопасностью вашего аккаунта.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ВЫХОД -->
+
+        <div class="settings-logout">
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="settings-logout-button"
+            >
+                Выйти из аккаунта
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

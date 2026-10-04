@@ -6,211 +6,334 @@
 
 <div class="workspace">
 
-    <aside class="sidebar">
+```
+<aside class="sidebar">
 
-        <div class="sidebar-title">
-            WORKSPACE
+    <div class="sidebar-title">
+        WORKSPACE
+    </div>
+
+    <a
+        href="{{ url_for('main.dashboard') }}"
+        class="sidebar-link active"
+    >
+        <span>⌂</span>
+        <span>Главная</span>
+    </a>
+
+    <a
+        href="{{ url_for('cases.case_list') }}"
+        class="sidebar-link"
+    >
+        <span>▣</span>
+        <span>Мои дела</span>
+    </a>
+
+    <a
+        href="{{ url_for('cases.documents') }}"
+        class="sidebar-link"
+    >
+        <span>▤</span>
+        <span>Документы</span>
+    </a>
+
+    <a
+        href="{{ url_for('main.ai_assistant') }}"
+        class="sidebar-link"
+    >
+        <span>✦</span>
+        <span>AI Assistant</span>
+    </a>
+
+    <div class="sidebar-title tools-title">
+        ИНСТРУМЕНТЫ
+    </div>
+
+    <a
+        href="{{ url_for('main.templates_page') }}"
+        class="sidebar-link"
+    >
+        <span>▱</span>
+        <span>Шаблоны</span>
+    </a>
+
+    <a
+        href="{{ url_for('main.settings') }}"
+        class="sidebar-link"
+    >
+        <span>⚙</span>
+        <span>Настройки</span>
+    </a>
+
+    <div class="sidebar-bottom">
+
+        <div class="user-card">
+
+            <div class="user-avatar">
+                {{ user.username[0]|upper }}
+            </div>
+
+            <div class="user-info">
+                <strong>{{ user.username }}</strong>
+                <span>{{ user.email }}</span>
+            </div>
+
         </div>
 
-        <a href="/dashboard" class="sidebar-link active">
-            <span>⌂</span>
-            Главная
+        <a
+            href="{{ url_for('auth.logout') }}"
+            class="logout"
+        >
+            Выйти
         </a>
 
-        <a href="/case" class="sidebar-link">
-            <span>▣</span>
-            Мои дела
-        </a>
+    </div>
 
-        <a href="#" class="sidebar-link disabled">
-            <span>▤</span>
-            Документы
-            <small>Скоро</small>
-        </a>
+</aside>
 
-        <a href="#" class="sidebar-link disabled">
-            <span>✦</span>
-            AI Assistant
-            <small>Скоро</small>
-        </a>
 
-        <div class="sidebar-title tools-title">
-            ИНСТРУМЕНТЫ
+<section class="workspace-content dashboard-page">
+
+    <!-- HEADER -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <div class="dashboard-label">
+                LEGALAI WORKSPACE
+            </div>
+
+            <h1>
+                Добро пожаловать, {{ user.username }}
+            </h1>
+
+            <p>
+                Юридическая работа с AI
+                в одном рабочем пространстве.
+            </p>
+
         </div>
 
-        <a href="#" class="sidebar-link disabled">
-            <span>▱</span>
-            Шаблоны
-            <small>Скоро</small>
+
+        <a
+            href="/case"
+            class="new-case-button"
+        >
+            <span>+</span>
+            Новое дело
         </a>
 
-        <a href="#" class="sidebar-link disabled">
-            <span>⚙</span>
-            Настройки
-            <small>Скоро</small>
-        </a>
+    </div>
 
-        <div class="sidebar-bottom">
 
-            <div class="user-card">
+    <!-- STATS -->
 
-                <div class="user-avatar">
-                    {{ user.username[0]|upper }}
-                </div>
+    <div class="dashboard-stats">
 
-                <div class="user-info">
-                    <strong>{{ user.username }}</strong>
-                    <span>{{ user.email }}</span>
-                </div>
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ▣
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Дела
+                </span>
+
+                <strong>
+               {{ cases_count }}
+                </strong>
+
+                <small>
+                    Активных дел
+                </small>
 
             </div>
 
-            <a href="/logout" class="logout">
-                Выйти
-            </a>
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon document-icon">
+                ▤
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Документы
+                </span>
+
+                <strong>
+                    {{ documents_count }}
+                </strong>
+
+                <small>
+                    Загружено
+                </small>
+
+            </div>
 
         </div>
 
-    </aside>
+
+        <div class="stat-card">
+
+            <div class="stat-icon ai-icon">
+                ✦
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    AI анализ
+                </span>
+
+                <strong>
+                    {{ analyses_count }}
+                </strong>
+
+                <small>
+                    Анализов выполнено
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
-    <section class="workspace-content">
+    <!-- QUICK ACCESS -->
 
-        <div class="workspace-header">
+    <section class="quick-access">
+
+        <div class="quick-access-header">
 
             <div>
-                <div class="workspace-label">
-                    LEGALAI WORKSPACE
+
+                <div class="dashboard-label">
+                    QUICK ACCESS
                 </div>
 
-                <h1>
-                    Добро пожаловать, {{ user.username }}
-                </h1>
-
-                <p>
-                    Юридическая работа с AI в одном рабочем пространстве.
-                </p>
-            </div>
-
-            <a href="/case" class="button primary">
-                + Новое дело
-            </a>
-
-        </div>
-
-
-        <div class="stats">
-
-            <div class="stat-card">
-                <span>Дела</span>
-                <strong>0</strong>
-                <small>Активных дел</small>
-            </div>
-
-            <div class="stat-card">
-                <span>Документы</span>
-                <strong>0</strong>
-                <small>Загружено</small>
-            </div>
-
-            <div class="stat-card">
-                <span>AI анализ</span>
-                <strong>0</strong>
-                <small>Анализов выполнено</small>
-            </div>
-
-        </div>
-
-
-        <div class="section-heading">
-
-            <div>
-                <h2>Быстрый доступ</h2>
+                <h2>
+                    Быстрый доступ
+                </h2>
 
                 <p>
                     Начните работу с LegalAI
                 </p>
+
             </div>
 
         </div>
 
 
-        <div class="quick-grid">
+        <div class="quick-access-grid">
 
-            <a href="/case" class="quick-card">
 
-                <div class="quick-icon">▣</div>
+            <!-- CREATE CASE -->
 
-                <div>
-                    <h3>Создать дело</h3>
+            <a
+                href="/case"
+                class="quick-card"
+            >
 
-                    <p>
-                        Создайте новое юридическое дело
-                        и добавьте информацию о клиенте.
-                    </p>
+                <div class="quick-card-top">
+
+                    <div class="quick-icon case-icon">
+                        ▣
+                    </div>
+
+                    <span class="quick-arrow">
+                        →
+                    </span>
+
                 </div>
 
-                <span class="arrow">→</span>
+                <h3>
+                    Создать дело
+                </h3>
+
+                <p>
+                    Создайте новое юридическое дело
+                    и добавьте информацию о клиенте.
+                </p>
 
             </a>
 
 
-            <div class="quick-card disabled-card">
+            <!-- DOCUMENT -->
 
-                <div class="quick-icon">▤</div>
+            <a
+                href="{{ url_for('main.ai_assistant') }}"
+                class="quick-card"
+            >
 
-                <div>
-                    <h3>Загрузить документ</h3>
+                <div class="quick-card-top">
 
-                    <p>
-                        Анализ договоров и других
-                        юридических документов.
-                    </p>
+                    <div class="quick-icon document-icon">
+                        ▤
+                    </div>
+
+                    <span class="quick-arrow">
+                        →
+                    </span>
+
                 </div>
 
-                <span class="soon">СКОРО</span>
+                <h3>
+                    Загрузить документ
+                </h3>
 
-            </div>
+                <p>
+                    Загрузите договор или другой
+                    юридический документ для AI-анализа.
+                </p>
+
+            </a>
 
 
-            <div class="quick-card disabled-card">
+            <!-- AI -->
 
-                <div class="quick-icon">✦</div>
+            <a
+                href="{{ url_for('main.ai_assistant') }}"
+                class="quick-card ai-quick-card"
+            >
 
-                <div>
-                    <h3>AI Assistant</h3>
+                <div class="quick-card-top">
 
-                    <p>
-                        Задавайте вопросы и работайте
-                        с юридической информацией.
-                    </p>
+                    <div class="quick-icon ai-icon">
+                        ✦
+                    </div>
+
+                    <span class="quick-arrow">
+                        →
+                    </span>
+
                 </div>
 
-                <span class="soon">СКОРО</span>
+                <h3>
+                    AI Assistant
+                </h3>
 
-            </div>
+                <p>
+                    Задавайте вопросы и работайте
+                    с юридической информацией.
+                </p>
 
-        </div>
-
-
-        <div class="empty-workspace">
-
-            <div class="empty-icon">✦</div>
-
-            <h2>Ваше рабочее пространство готово</h2>
-
-            <p>
-                Создайте первое дело, чтобы начать
-                организовывать юридическую работу.
-            </p>
-
-            <a href="/case" class="button primary">
-                Создать первое дело
             </a>
 
         </div>
 
     </section>
+
+</section>
+```
 
 </div>
 

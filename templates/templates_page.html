@@ -1,0 +1,355 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}Шаблоны — LegalAI{% endblock %}
+
+{% block content %}
+
+<div class="workspace">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            WORKSPACE
+        </div>
+
+        <a
+            href="{{ url_for('main.dashboard') }}"
+            class="sidebar-link"
+        >
+            <span>⌂</span>
+            <span>Главная</span>
+        </a>
+
+        <a
+            href="{{ url_for('cases.case_list') }}"
+            class="sidebar-link"
+        >
+            <span>▣</span>
+            <span>Мои дела</span>
+        </a>
+
+        <a
+            href="{{ url_for('cases.documents') }}"
+            class="sidebar-link"
+        >
+            <span>▤</span>
+            <span>Документы</span>
+        </a>
+
+        <a
+            href="{{ url_for('main.ai_assistant') }}"
+            class="sidebar-link"
+        >
+            <span>✦</span>
+            <span>AI-помощник</span>
+        </a>
+
+        <a
+            href="{{ url_for('main.templates_page') }}"
+            class="sidebar-link active"
+        >
+            <span>▱</span>
+            <span>Шаблоны</span>
+        </a>
+
+        <a
+            href="{{ url_for('main.settings') }}"
+            class="sidebar-link"
+        >
+            <span>⚙</span>
+            <span>Настройки</span>
+        </a>
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="sidebar-link"
+            >
+                <span>↪</span>
+                <span>Выйти</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <section class="workspace-content">
+
+        <div class="workspace-header">
+
+            <div>
+
+                <div class="workspace-label">
+                    LEGALAI LIBRARY
+                </div>
+
+                <h1>
+                    Шаблоны
+                </h1>
+
+                <p>
+                    Готовые юридические шаблоны
+                    для подготовки документов.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="case-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Юридические шаблоны
+                    </h2>
+
+                    <p>
+                        Выберите шаблон, чтобы открыть
+                        его полное содержание.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-grid">
+
+
+                <!-- Договор оказания услуг -->
+
+                <a
+                    href="{{ url_for('main.template_detail', template_id='service-contract') }}"
+                    class="quick-card"
+                >
+
+                    <div class="quick-icon">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Договор оказания услуг
+                        </h3>
+
+                        <p>
+                            Шаблон договора между заказчиком
+                            и исполнителем на оказание услуг.
+                        </p>
+
+                    </div>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- Трудовой договор -->
+
+                <a
+                    href="{{ url_for('main.template_detail', template_id='employment-contract') }}"
+                    class="quick-card"
+                >
+
+                    <div class="quick-icon">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Трудовой договор
+                        </h3>
+
+                        <p>
+                            Базовый шаблон трудового договора
+                            между работодателем и сотрудником.
+                        </p>
+
+                    </div>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- Претензия -->
+
+                <a
+                    href="{{ url_for('main.template_detail', template_id='claim') }}"
+                    class="quick-card"
+                >
+
+                    <div class="quick-icon">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Претензия
+                        </h3>
+
+                        <p>
+                            Шаблон претензии для досудебного
+                            урегулирования спора.
+                        </p>
+
+                    </div>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- Исковое заявление -->
+
+                <a
+                    href="{{ url_for('main.template_detail', template_id='lawsuit') }}"
+                    class="quick-card"
+                >
+
+                    <div class="quick-icon">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Исковое заявление
+                        </h3>
+
+                        <p>
+                            Структурированный шаблон
+                            искового заявления в суд.
+                        </p>
+
+                    </div>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- Доверенность -->
+
+                <a
+                    href="{{ url_for('main.template_detail', template_id='power-of-attorney') }}"
+                    class="quick-card"
+                >
+
+                    <div class="quick-icon">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Доверенность
+                        </h3>
+
+                        <p>
+                            Шаблон доверенности на представление
+                            интересов другого лица.
+                        </p>
+
+                    </div>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- Соглашение о конфиденциальности -->
+
+                <a
+                    href="{{ url_for('main.template_detail', template_id='nda') }}"
+                    class="quick-card"
+                >
+
+                    <div class="quick-icon">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Соглашение о конфиденциальности
+                        </h3>
+
+                        <p>
+                            Шаблон соглашения о защите
+                            конфиденциальной информации.
+                        </p>
+
+                    </div>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+        <div class="empty-workspace">
+
+            <div class="empty-icon">
+                ✦
+            </div>
+
+            <h3>
+                Создавайте документы быстрее
+            </h3>
+
+            <p>
+                В будущем здесь можно будет автоматически
+                создавать документы на основе выбранного
+                шаблона и данных вашего дела.
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<style>
+
+.quick-card {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.quick-card:hover {
+    text-decoration: none;
+}
+
+</style>
+
+{% endblock %}
+```

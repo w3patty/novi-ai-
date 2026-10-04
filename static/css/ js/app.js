@@ -38,3 +38,30 @@ document.addEventListener("keydown", function (event) {
     }
 
 });
+
+
+/* =========================================================
+   AI MARKDOWN
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const answer = document.querySelector(".ai-markdown-answer");
+
+    if (!answer) {
+        return;
+    }
+
+    if (typeof marked === "undefined") {
+        return;
+    }
+
+    let markdown = answer.textContent;
+
+    markdown = markdown.replace(/\\\*\\\*/g, "**");
+    markdown = markdown.replace(/\\#/g, "#");
+    markdown = markdown.replace(/\\-/g, "-");
+
+    answer.innerHTML = marked.parse(markdown);
+
+});
